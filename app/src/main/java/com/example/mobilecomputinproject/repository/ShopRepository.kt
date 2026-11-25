@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+// Repository class to manage mock products list, cart items state, and order history
 class ShopRepository {
 
     private val _products = listOf(

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.lifecycle.viewModelScope
 
+// ViewModel handles the app state, user interactions, and connects UI to the ShopRepository
 class ShopViewModel : ViewModel() {
     private val repository = ShopRepository()
 
@@ -27,11 +28,13 @@ class ShopViewModel : ViewModel() {
     val cartItems: StateFlow<List<CartItem>> = repository.cartItems
     val orders: StateFlow<List<Order>> = repository.orders
 
+    // Calculate total price of items in cart
     val cartTotal: StateFlow<Double> = repository.cartItems
         .combine(MutableStateFlow(0.0)) { items, _ ->
             items.sumOf { it.totalPrice }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
+    // Count total quantity of items in cart for badge
     val cartItemCount: StateFlow<Int> = repository.cartItems
         .combine(MutableStateFlow(0)) { items, _ ->
             items.sumOf { it.quantity }
@@ -50,6 +53,7 @@ class ShopViewModel : ViewModel() {
         filterProducts(_searchQuery.value, category)
     }
 
+    // Filter products based on search query and selected category tab
     private fun filterProducts(query: String, category: String) {
         val all = repository.getProducts()
         val filtered = all.filter { product ->
